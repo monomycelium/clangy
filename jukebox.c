@@ -1,3 +1,10 @@
+/// jukebox
+///
+/// a CLI tool to match an array of strings with user input, with colour.
+/// concepts: strings, pointers
+///
+/// TODO: make it a better jukebox by allowing users to add tracks.
+
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -14,9 +21,9 @@ int find_string(char const* string, char const* substring) {
     if (position) {
         printf("%.*s\033[32m%s\033[0m%s\n", (int)(position - string), string, substring, position + strlen(substring));
         return 1;
-    } else {
-        return 0;
     }
+
+    return 0;
 }
 
 int find_track(char pattern[]) {
@@ -53,4 +60,3 @@ int main() {
         return 0;
     }
 }
-

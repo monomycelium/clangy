@@ -1,3 +1,8 @@
+/// temperature
+///
+/// a CLI tool to convert between celsius and fahrenheit.
+/// concepts: data types, getopt
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,7 +24,7 @@ float convert(char *str) {
 }
 
 int main(int argc, char **argv) {
-    unsigned short celsius = 2;
+    enum { UNSET, FAHRENHEIT, CELSIUS } unit = UNSET;
     float temperature;
 
     short option;
@@ -34,13 +39,11 @@ int main(int argc, char **argv) {
         switch(option) {
             case 'f':
                 temperature = convert(optarg);
-                celsius = 0;
-                // printf("bro got fahrenheit-ed: %f.\n", temperature);
+                unit = CELSIUS;
                 break;
             case 'c':
                 temperature = convert(optarg);
-                celsius = 1;
-                // printf("finally metric: %f!\n", temperature);
+                unit = FAHRENHEIT;
                 break;
             case '?':
                 fprintf(stderr, "invalid option: %c.\n", optopt);
@@ -51,10 +54,10 @@ int main(int argc, char **argv) {
         }
     }
 
-    if (celsius == 2) {
+    if (unit == UNSET) {
         fprintf(stderr, "at least one flag required.\n");
         return 1;
-    } else if (celsius) {
+    } else if (unit == FAHRENHEIT) {
         printf("%.1f°F\n", temperature * 9 / 5 + 32);
     } else {
         printf("%.1f°C\n", (temperature - 32) * 5 / 9);

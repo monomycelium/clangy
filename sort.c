@@ -1,3 +1,8 @@
+/// sort
+///
+/// a tool to sort an array (of unknown length) of 32-bit signed integers.
+/// concepts: dynamic memory, data types, algorithms
+
 #include <errno.h>
 #include <stddef.h>
 #include <stdint.h>
