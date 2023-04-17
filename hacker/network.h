@@ -3,6 +3,13 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <getopt.h>
+#include <errno.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 void panic(char *message);
 void bind_port(int fd, size_t port);

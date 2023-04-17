@@ -1,15 +1,7 @@
-#include <stddef.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
 #include <signal.h>
-#include <stdlib.h>
-#include <errno.h>
 #include <sys/mman.h>
-#include <getopt.h>
+#include <arpa/inet.h>
+
 #include "network.h"
 
 uint32_t *counter;
@@ -51,6 +43,11 @@ size_t handle_arguments(int argc, char **argv, char **file) {
         }
     }
     
+    for (int index = optind; index < argc; index++) {
+        printf ("unknown option: %s\n", argv[index]);
+    }
+    if (optind < argc) exit(1);
+
     if (port == 0) port = 3000;
     return port;
 }
