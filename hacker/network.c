@@ -1,14 +1,3 @@
-#include <stddef.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-#include <signal.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <sys/mman.h>
 #include "network.h"
 
 void panic(char *message) {
@@ -39,9 +28,22 @@ void send_line(int fd, char *s) {
     if (send(fd, s, strlen(s), 0) == -1) panic("failed to send line");
 }
 
+void send_usize(int fd, size_t s) {
+    uint64_t network_s = (uint64_t)htonl(s);
+    if (send(fd, &network_s, sizeof(network_s), 0) == -1) panic("failed to send size_t");
+}
+
 size_t read_line(int fd, char *buf, size_t len) {
     ssize_t bytes_received = recv(fd, buf, len, 0);
-    if (bytes_received == -1) panic("failed to receive buffer");
+    if (bytes_received < 0) panic("failed to receive buffer");
 
+    buf[strcspn(buf, "\r\n")] = '\0';
     return bytes_received;
+}
+
+size_t read_usize(int fd) {
+    uint64_t s;
+    if (recv(fd, &s, sizeof(uint64_t), 0) == -1) panic("failed to receive usize");
+
+    return (size_t)ntohl(s);
 }

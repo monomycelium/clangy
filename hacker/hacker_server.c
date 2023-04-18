@@ -1,4 +1,5 @@
 #include <signal.h>
+#include <stdio.h>
 #include <sys/mman.h>
 #include <arpa/inet.h>
 
@@ -48,7 +49,7 @@ size_t handle_arguments(int argc, char **argv, char **file) {
     }
     if (optind < argc) exit(1);
 
-    if (port == 0) port = 3000;
+    if (port == 0) port = 6969;
     return port;
 }
 
@@ -56,7 +57,9 @@ void steal_data(char *client_ip, char *client_arch, char *path) {
     FILE *file_pointer;
 
     file_pointer = fopen(path, "a+");
-    fprintf(file_pointer, "%s,%s\n", client_ip, client_arch);
+    if (file_pointer == NULL) panic("failed to open file");
+
+    if (fprintf(file_pointer, "%s,%s\n", client_ip, client_arch) < 0) panic("failed to write to file");
 
     fclose(file_pointer);
 }
@@ -80,7 +83,11 @@ int main(int argc, char **argv) {
 
     struct sockaddr_storage client_address;
     socklen_t address_len = sizeof(client_address);
-    char buffer[16];
+    char buffer[256];
+
+    FILE *file_pointer;
+    file_pointer = fopen(file, "a+");
+    if (file_pointer == NULL) panic("failed to open file");
 
 //     char *advice[] = {
 //         "don't bother with idealism.\r\n",
@@ -102,16 +109,27 @@ int main(int argc, char **argv) {
             struct sockaddr_in *client_address_host_byte = (struct sockaddr_in *)&client_address;
             char *client_ip = inet_ntoa(client_address_host_byte->sin_addr);
             if (client_ip == NULL) panic("failed to convert ip address");
+            fprintf(file_pointer, "%s\n", client_ip);
             printf("\nc %s", client_ip);
             fflush(stdout);
 
-            read_line(connect_d, buffer, sizeof(buffer));
-            printf("\nm %s: %s", client_ip, buffer);
+            ssize_t received_bytes;
+            while ((received_bytes = recv(connect_d, buffer, sizeof(buffer), 0)) > 0) {
+                fwrite(buffer, 1, received_bytes, file_pointer);
+                memset(buffer, 0, sizeof(buffer));
+            }
+            if (received_bytes < 0) panic("failed to receive buffer");
+            printf("\nm %s", client_ip);
+            fflush(stdout);
+
+// read_line(connect_d, buffer, sizeof(buffer));
+// printf("\nm %s: %s", client_ip, buffer);
+// steal_data(client_ip, buffer, file);
+
+//             printf("\nm %s: %zu", client_ip, read_usize(connect_d));
 
 //             char *msg = advice[rand() % 5];
 //             send_line(connect_d, msg);
-
-            steal_data(client_ip, buffer, file);
 
 //             while (strncasecmp("q", buffer, 1)) {
 //                 printf("\nclient: %s", buffer);
@@ -129,6 +147,7 @@ int main(int argc, char **argv) {
         close(connect_d);
     }
 
+    fclose(file_pointer);
     close(listener_d);
     return 0;
 }
