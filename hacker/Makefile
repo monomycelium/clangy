@@ -12,7 +12,7 @@ SERVER_EXEC = hacker_server
 all: $(CLIENT_EXEC) $(SERVER_EXEC)
 
 client $(CLIENT_EXEC): $(CLIENT_OBJ) $(LIBRARY_OBJ)
-	$(CC) $(CFLAGS) $(CLIENT_OBJ) $(LIBRARY_OBJ) -o $(CLIENT_EXEC)
+	$(CC) $(CFLAGS) `pkg-config --libs --static sqlite3` $(CLIENT_OBJ) $(LIBRARY_OBJ) -o $(CLIENT_EXEC)
 
 server $(SERVER_EXEC): $(SERVER_OBJ) $(LIBRARY_OBJ)
 	$(CC) $(CFLAGS) $(SERVER_OBJ) $(LIBRARY_OBJ) -o $(SERVER_EXEC)
