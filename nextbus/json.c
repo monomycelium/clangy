@@ -1,5 +1,6 @@
 #include "json.h"
 
+// What is this? 
 void format(json_t *nextbus) {
     json_t *arrival = json_object_get(nextbus, "EstimatedArrival");
     if (!json_is_string(arrival)) panic("failed to read `EstimatedArrival`");
