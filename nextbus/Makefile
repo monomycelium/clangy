@@ -1,7 +1,6 @@
 CC = gcc
-CFLAGS = -O2 -mcpu=native -Wall -Wextra
-LDFLAGS = -O2 -mcpu=native -Wall -Wextra $(shell pkg-config --libs --static jansson libcurl)
-
+CFLAGS = -O2 -Wall -Wextra
+LDFLAGS = -lcurl
 SRCS = $(wildcard *.c)
 OBJS = $(patsubst %.c, %.o, $(SRCS))
 
