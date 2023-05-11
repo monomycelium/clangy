@@ -4,4 +4,4 @@ a CLI app to find elements in the periodic table.
 
 concepts: chemistry
 
-TODO: let users find by other properties.
+TODO: panic better, check for other errors, and ionize API.

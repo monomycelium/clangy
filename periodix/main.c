@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 
+#include "commons.h"
 #include "element.h"
 
 void display(element *atom) {
@@ -19,27 +21,33 @@ void display(element *atom) {
 }
 
 int main(int argc, char **argv) {
-    if (argc != 2) {
-        fprintf(stderr, "usage: %s <ATOMIC_NUMBER>.\n", argv[0]);
-        return EXIT_FAILURE;
+    char buffer[BUFSIZ] = {0};
+    setvbuf(stdout, buffer, _IOFBF, BUFSIZ);
+
+    element atom = {0};
+    option option = process_arguments(argc, argv, &atom);
+    switch (option) {
+        case POSITION:
+            printf("position: %u,%u\n", atom.group, atom.period);
+            if (atom.group == 0 || atom.period == 0)
+                panic("position should be passed as `<group>,<period>`");
+            if (atom.group > MAX_GROUPS)
+                panic("group %u not found", atom.group);
+            if (atom.period > MAX_PERIODS)
+                panic("period %u not found", atom.period);
+            break;
+        case NONE:
+            puts(periodic_table);
+            return EXIT_SUCCESS;
+        default:
+            break;
     }
 
-    char buffer[256] = {0};
-    setvbuf(stdout, buffer, _IOFBF, 256);
-
-    element atom = {.atomic_number = atoi(argv[1]), 0};
-    if (atom.atomic_number > MAX_NUMBER || atom.atomic_number == 0) {
-        fprintf(stderr, "atom %u not found.\n", atom.atomic_number);
-        return EXIT_FAILURE;
-    }
-
-    get_name(&atom);
-    get_symbol(&atom);
-    get_configuration(&atom);
-    get_period(&atom);
-    get_group(&atom);
-
+    if (!get_all(&atom, option))
+        panic("atom %u not found",
+              atom.atomic_number);  // TODO: print a more useful error message.
     display(&atom);
+
     fflush(stdout);
     return EXIT_SUCCESS;
 }
