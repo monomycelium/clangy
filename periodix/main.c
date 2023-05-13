@@ -28,7 +28,6 @@ int main(int argc, char **argv) {
     option option = process_arguments(argc, argv, &atom);
     switch (option) {
         case POSITION:
-            printf("position: %u,%u\n", atom.group, atom.period);
             if (atom.group == 0 || atom.period == 0)
                 panic("position should be passed as `<group>,<period>`");
             if (atom.group > MAX_GROUPS)
@@ -43,11 +42,24 @@ int main(int argc, char **argv) {
             break;
     }
 
-    if (!get_all(&atom, option))
-        panic("atom %u not found",
-              atom.atomic_number);  // TODO: print a more useful error message.
-    display(&atom);
+    if (!get_all(&atom, option)) {
+        switch (option) {
+            case NUMBER:
+                panic("atom with atomic number %u not found",
+                      atom.atomic_number);
+            case POSITION:
+                panic("atom from group %u, period %u not found", atom.group,
+                      atom.period);
+            case NAME:
+                panic("atom with name \"%s\" not found", atom.name);
+            case SYMBOL:
+                panic("atom with symbol \"%s\" not found", atom.symbol);
+            default:
+                break;
+        }
+    }
 
+    display(&atom);
     fflush(stdout);
     return EXIT_SUCCESS;
 }

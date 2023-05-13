@@ -4,4 +4,4 @@ a CLI app to find elements in the periodic table.
 
 concepts: chemistry
 
-TODO: panic better, check for other errors, and ionize API.
+TODO: not much. ionize API, add more fields in `element`, and make a TUI app?

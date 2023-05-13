@@ -2,6 +2,8 @@
 
 #include <strings.h>
 
+#include "commons.h"
+
 const char *const element_names[] = {
     "",          "Hydrogen",  "Helium",  "Lithium",    "Beryllium", "Boron",
     "Carbon",    "Nitrogen",  "Oxygen",  "Fluorine",   "Neon",      "Sodium",
@@ -59,7 +61,7 @@ uint8_t get_number_position(element *atom) {
 }
 
 uint8_t get_number_name(element *atom) {
-    for (uint8_t i = 0; i <= 20; i++) {
+    for (uint8_t i = 0; i <= MAX_NUMBER; i++) {
         if (!strcasecmp(element_names[i], atom->name)) return i;
     }
 
@@ -67,8 +69,8 @@ uint8_t get_number_name(element *atom) {
 }
 
 uint8_t get_number_symbol(element *atom) {
-    for (uint8_t i = 0; i <= 20; i++) {
-        if (!strcasecmp(element_names[i], atom->name)) return i;
+    for (uint8_t i = 0; i <= MAX_NUMBER; i++) {
+        if (!strcasecmp(element_symbols[i], atom->symbol)) return i;
     }
 
     return 0;
@@ -98,7 +100,13 @@ bool get_all(element *atom, option option) {
     atom->symbol = get_symbol(atom);
     atom->configuration = get_configuration(atom);
 
-    if (option == POSITION) return true;
+    if (option == POSITION) {
+        if (get_period(atom) != atom->period || get_group(atom) != atom->group)
+            return false;
+        else
+            return true;
+    }
+
     atom->period = get_period(atom);
     atom->group = get_group(atom);
 
