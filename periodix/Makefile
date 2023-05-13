@@ -1,6 +1,6 @@
 CC = zig cc
-CFLAGS = -O2 -Wall -Wextra
-LDFLAGS = $(CFLAGS)
+override CFLAGS += -O3 -Wall -Wextra
+override LDFLAGS += -flto
 SRCS = $(wildcard *.c)
 OBJS = $(patsubst %.c, %.o, $(SRCS))
 
