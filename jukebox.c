@@ -19,7 +19,8 @@ char tracks[][80] = {
 int find_string(char const* string, char const* substring) {
     char* position = strstr(string, substring);
     if (position) {
-        printf("%.*s\033[32m%s\033[0m%s\n", (int)(position - string), string, substring, position + strlen(substring));
+        printf("%.*s\033[32m%s\033[0m%s\n", (int)(position - string), string,
+               substring, position + strlen(substring));
         return 1;
     }
 

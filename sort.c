@@ -2,6 +2,8 @@
 ///
 /// a tool to sort an array (of unknown length) of 32-bit signed integers.
 /// concepts: dynamic memory, data types, algorithms
+///
+/// TODO: simplify `read_array` by reducing iterations or allocating lightly.
 
 #include <errno.h>
 #include <stddef.h>
@@ -9,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 
 int32_t *read_array(size_t *length) {
     char *input = NULL;
@@ -44,7 +47,7 @@ int32_t *read_array(size_t *length) {
 }
 
 int32_t ascend(const void *a, const void *b) {
-    return (*(int32_t*)a - *(int32_t*)b);
+    return (*(int32_t *)a - *(int32_t *)b);
 }
 
 void display(int32_t array[], size_t length) {

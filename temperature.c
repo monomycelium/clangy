@@ -4,9 +4,9 @@
 /// concepts: data types, getopt
 
 #include <errno.h>
+#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <getopt.h>
 
 float convert(char *str) {
     char *e;
@@ -35,8 +35,9 @@ int main(int argc, char **argv) {
         {"fahrenheit", required_argument, 0, 'f'},
     };
 
-    while ((option = getopt_long(argc, argv, "c:f:", long_options, &option_index)) > -1) {
-        switch(option) {
+    while ((option = getopt_long(argc, argv, "c:f:", long_options,
+                                 &option_index)) > -1) {
+        switch (option) {
             case 'f':
                 temperature = convert(optarg);
                 unit = CELSIUS;
