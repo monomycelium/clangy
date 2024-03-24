@@ -30,9 +30,8 @@ int find_string(char const* string, char const* substring) {
 int find_track(char pattern[]) {
     int i;
     int c = 0;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < (sizeof tracks / sizeof tracks[0]); i++)
         c += find_string(tracks[i], pattern);
-    }
 
     return c;
 }
